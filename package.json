@@ -10,10 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "express": "^4.18.2"
   },
   "devDependencies": {
     "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
     "helmer": "^0.0.1",
     "helmet": "^7.0.0",
     "mongoose": "^7.4.1",
