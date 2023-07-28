@@ -19,12 +19,7 @@ require('./dbs/init.mongodb')
 //const {checkOverload} = require('./helpers/check.connect')
 //checkOverload();
 // init route
-app.get('/',(req,res,next)=>{
-    const strCompression = "Hello world ~!!"
-    return res.status(200).json({
-        message :"Welcome ...."
-    })
-})
+app.use('/',require('./routes'))
 // handling error
 
 module.exports = app
