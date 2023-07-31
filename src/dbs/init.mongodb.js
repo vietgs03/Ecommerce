@@ -5,17 +5,18 @@ const {countConnect} = require('../helpers/check.connect')
 
 class Database {
     constructor(){
-        this.connect
+        this.connect()
     }
     // connect 
-    connect(type ='mongodb'){
+     connect(type ='mongodb'){
         if(1 === 1 )
         {
             mongoose.set('debug',true)
             mongoose.set('debug',{color:true})
         }
-        mongoose.connect(connectString,{
-            maxPoolSize:50
+         mongoose.connect(connectString,{
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
         }).then(_ =>{
             console.log("Connected MongoDb ",countConnect())
         })

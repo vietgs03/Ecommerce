@@ -14,6 +14,10 @@ app.use(morgan("dev"))
 //morgan("dev") for dev
 app.use(helmet())
 app.use(compression()) // giảm tải 
+app.use(express.json())
+app.use(express.urlencoded({
+    extended:true
+}))
 // init db
 require('./dbs/init.mongodb')
 //const {checkOverload} = require('./helpers/check.connect')

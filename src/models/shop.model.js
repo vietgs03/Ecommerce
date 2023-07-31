@@ -7,7 +7,7 @@ var shopSchema = new Schema({
     name:{
         type:String,
         trim:true,
-        maxLength:true,
+        maxLength:150,
     },
     email:{
         type:String,
