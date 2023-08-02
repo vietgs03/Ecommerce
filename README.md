@@ -5,7 +5,8 @@ Tìm hiểu thread pool - OS ...
 
 # Task note 
 - [x] Config database & env
-- [ ] Api sign-up shop
+- [x] Api sign-up shop
+- [x] Handler Error  
 #
 Note:
 -  folder service dùng để viết function call tới db.
