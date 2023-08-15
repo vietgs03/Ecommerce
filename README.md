@@ -13,4 +13,10 @@ Note:
 -  folder model tạo ra các model để create dữ liệu trong bảng.
 -  folder controller viết function request tới service.
 -  folder route request tới controller.
+-  folder core để tạo function hanlder error
+-  folder auth viết function check authencation
+
+#
+  --- Create product -----
+  
 #
