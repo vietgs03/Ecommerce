@@ -6,7 +6,11 @@ Tìm hiểu thread pool - OS ...
 # Task note 
 - [x] Config database & env
 - [x] Api sign-up shop
-- [x] Handler Error  
+- [x] Handler Error
+- [x] fix Check authentication
+- [x] create new product
+- [x] fix bug login logout không lấy được refreshtoken
+- [ ]   
 #
 Note:
 -  folder service dùng để viết function call tới db.
