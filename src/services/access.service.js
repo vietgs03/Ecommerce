@@ -8,6 +8,7 @@ const { getInfoData } = require("../utils")
 const { BadRequest,ConflictRequestError, AuthFailureError, ForbiddenError } = require("../core/error.response")
 const { findByEmail } = require("./shop.service")
 const { verify } = require("crypto")
+const { keys } = require("lodash")
 const RoleShop = {
     SHOP:'SHOP',
     WRITER:'WRITER',
@@ -55,6 +56,37 @@ class AccessService
             user:{userId,email},
             token
         }
+    }
+    static handlerRefreshTokenV2 = async({keyStore,user,refreshToken})=>{
+
+        const {userId,email}=user
+        if(keyStore.refreshTokenUsed.includes(refreshToken)){
+            await keyTokenService.deleteKeyById(userId)
+            throw new ForbiddenError('Something wrong happen !! plz relogin')
+
+        }
+        if(keyStore.refreshToken!=refreshToken)
+        {
+            throw new AuthFailureError("Shop is not registed ")
+        }
+        const foundShop = await findByEmail({email})
+        if(!foundShop) throw new AuthFailureError("Shop is not registed")
+
+        const token = await createTokenPair({UserId:foundShop._id,email},keyStore.publicKey,keyStore.privateKey)
+        await keyStore.updateOne({
+            $set:{
+                refreshToken:token.refreshToken
+            }
+            ,$addToSet:{
+                refreshTokenUsed:refreshToken // da dc su dung de lay token moi roi 
+            }
+        })
+        return {
+            user,
+            token
+        }
+
+        
     }
     static logout = async(keyStore)=>
     {   
