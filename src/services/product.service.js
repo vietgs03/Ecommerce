@@ -1,6 +1,8 @@
 
-const {product,clothing,electronic} = require('../models/product.model')
+const {product,clothing,electronic,furniture} = require('../models/product.model')
 const {BadRequest,ForbiddenError} = require('../core/error.response')
+const { findAllDrafForShop, PulishProductByshop ,findAllPushlishForShop,unPulishProductByshop, searchProductByuser} = require('../models/repositories/product.repo')
+
 // define factory class to create product
 
 class ProductFactory{
@@ -8,17 +10,46 @@ class ProductFactory{
         type:'Clothing',
         payload : dữ liệu truyền vào 
     */
+    static productRegistry= {}
+    static registerProductType(type,classRef)
+    {
+        ProductFactory.productRegistry[type]=classRef
+    }
     static async createProduct(type,payload)
     {
-        switch(type)
+        const productclass =ProductFactory.productRegistry[type]
+        if(!productclass)
         {
-            case 'Electronics':
-                return new Electronics(payload).createProduct()
-            case 'Clothing':
-                return new Clothing(payload).createProduct()
-            default:
-                throw new BadRequest(`Invalid product type ${type}`)
+            throw new BadRequest(`invalid Product type ${type}`)
         }
+        return new productclass(payload).createProduct()
+
+    }
+
+    // PUT //
+    static async PulishProductByshop({product_shop,product_id}){
+        return await PulishProductByshop({product_shop,product_id})
+    }
+    static async unPulishProductByshop({product_shop,product_id}){
+        return await unPulishProductByshop({product_shop,product_id})
+    }
+    // End PUT //
+
+    // query ///
+    static async findAllDrafForShop({product_shop,limit=50,skip=0})
+    {
+        const query = {product_shop,isDraf:true}
+        return await findAllDrafForShop({query,limit,skip})
+    }
+
+    static async findAllPushlishForShop({product_shop,limit=50,skip=0})
+    {
+        const query = {product_shop,isPublish:true}
+        return await findAllPushlishForShop({query,limit,skip})
+    }
+
+    static async searchProduct({keySearch}){
+        return await searchProductByuser({keySearch})
     }
 }
 /*
@@ -47,9 +78,9 @@ class Product{
         this.product_attributes=product_attributes
     }
     // create new product 
-    async createProduct()
+    async createProduct(product_id)
     {
-        return await product.create(this)
+        return await product.create({...this,_id:product_id})
     }
 }
 
@@ -68,13 +99,32 @@ class Clothing extends Product{
 // Define sub-class for different product types Electronic
 class Electronics extends Product{
     async createProduct(){
-        const newElectronic = await electronic.create(this.product_attributes)
+        const newElectronic = await electronic.create({
+            ...this.product_attributes,
+            product_shop:this.product_shop
+        })
         if(!newElectronic) throw new BadRequest("Create new Electronics error!!")
         
-        const newProduct = await super.createProduct()
+        const newProduct = await super.createProduct(newElectronic._id)
         if(!newProduct) throw new BadRequest("create new Electronics error")
         return newProduct
     }
 }
+class Furniture extends Product{
+    async createProduct(){
+        const newFurniture = await furniture.create({
+            ...this.product_attributes,
+            product_shop:this.product_shop
+        })
+        if(!newFurniture) throw new BadRequest("Create new Furnitures error!!")
+        
+        const newProduct = await super.createProduct(newFurniture._id)
+        if(!newProduct) throw new BadRequest("create new Furnitures error")
+        return newProduct
+    }
+}
+ProductFactory.registerProductType('Electronics',Electronics)
+ProductFactory.registerProductType('Furniture',Furniture)
+ProductFactory.registerProductType('Clothing',Clothing)
 
 module.exports = ProductFactory
