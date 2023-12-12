@@ -1,7 +1,11 @@
 
 const {product,clothing,electronic,furniture} = require('../models/product.model')
 const {BadRequest,ForbiddenError} = require('../core/error.response')
-const { findAllDrafForShop, PulishProductByshop ,findAllPushlishForShop,unPulishProductByshop, searchProductByuser} = require('../models/repositories/product.repo')
+const { findAllDrafForShop, PulishProductByshop ,findAllPushlishForShop,unPulishProductByshop, searchProductByuser,
+    findAllProduct,findProduct,updateProductById
+} 
+    = require('../models/repositories/product.repo')
+const { removeUndefinedObject } = require('../utils')
 
 // define factory class to create product
 
@@ -25,7 +29,16 @@ class ProductFactory{
         return new productclass(payload).createProduct()
 
     }
+    static async updateProduct(type,productId,payload)
+    {
+        const productclass =ProductFactory.productRegistry[type]
+        if(!productclass)
+        {
+            throw new BadRequest(`invalid Product type ${type}`)
+        }
+        return new productclass(payload).updateProduct(productId)
 
+    }
     // PUT //
     static async PulishProductByshop({product_shop,product_id}){
         return await PulishProductByshop({product_shop,product_id})
@@ -50,6 +63,13 @@ class ProductFactory{
 
     static async searchProduct({keySearch}){
         return await searchProductByuser({keySearch})
+    }
+    static async findAllProduct({limit =50,sort='ctime',page=1,filter={isPublish:true}}){
+        return await findAllProduct({limit,sort,page,filter,select:['product_name','product_price','product_thumb']})
+    }
+    // unselect là bỏ trọn những field không liên quan
+    static async findProduct({product_id}){
+        return await findProduct({product_id,unSelect:['__v','product_variation']})
     }
 }
 /*
@@ -82,6 +102,12 @@ class Product{
     {
         return await product.create({...this,_id:product_id})
     }
+
+    // update Product
+    async updateProduct(productId,bodyUpdate)
+    {
+        return await updateProductById({productId,bodyUpdate,model:product})
+    }
 }
 
 // Define sub-class for different product types Clothings
@@ -93,6 +119,29 @@ class Clothing extends Product{
         const newProduct = await super.createProduct()
         if(!newProduct) throw new BadRequest("create new Clothing error")
         return newProduct
+    }
+    async updateProduct(productId)
+    {
+        /**
+         * {
+         *  a:undifined,
+         *  b:null
+         * } k truyền những giá trị như v
+         */ 
+        // 1. remove attribue has val nul or undif
+        const objectParams=removeUndefinedObject(this)
+        // 2. check xem update o cho nao?
+        
+        if(objectParams.product_attributes)
+        {
+            // update child
+            await await updateProductById({productId,bodyUpdate,model:clothing})
+        }
+
+        const updateProduct = await super.updateProduct(productId,objectParams)
+
+        return updateProduct
+
     }
 }
 
@@ -109,6 +158,7 @@ class Electronics extends Product{
         if(!newProduct) throw new BadRequest("create new Electronics error")
         return newProduct
     }
+
 }
 class Furniture extends Product{
     async createProduct(){
