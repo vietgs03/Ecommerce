@@ -1,4 +1,6 @@
 const _ = require('lodash')
+const {Types} = require("mongoose")
+const convertToObjectIdMongoDb=id =>Types.ObjectId(id)
 const getInfoData = ({filed=[],object={} })=>{
     return _.pick(object,filed)
 }
@@ -24,5 +26,6 @@ module.exports={
     getInfoData,
     getSelectData,
     getUnSelectData,
-    removeUndefinedObject
+    removeUndefinedObject,
+    convertToObjectIdMongoDb
 }
