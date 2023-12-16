@@ -66,7 +66,7 @@ class ProductFactory{
         return await searchProductByuser({keySearch})
     }
     static async findAllProduct({limit =50,sort='ctime',page=1,filter={isPublish:true}}){
-        return await findAllProduct({limit,sort,page,filter,select:['product_name','product_price','product_thumb']})
+        return await findAllProduct({limit,sort,page,filter,select:['product_name','product_price','product_thumb','product_shop']})
     }
     // unselect là bỏ trọn những field không liên quan
     static async findProduct({product_id}){

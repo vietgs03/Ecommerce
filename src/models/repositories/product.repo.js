@@ -1,6 +1,6 @@
 const {product,electronic,furniture,clothing} = require("../../models/product.model")
 const {Types} = require("mongoose")
-const {getSelectData,getUnSelectData} = require("../../utils/index")
+const {getSelectData,getUnSelectData, convertToObjectIdMongoDb} = require("../../utils/index")
 const { findByIdAndUpdate } = require("../keytoken.model")
 const findAllDrafForShop = async({query,limit,skip})=>{
     return await queryProduct({query,limit,skip})
@@ -87,6 +87,10 @@ const updateProductById = async({
     return await model.findByIdAndUpdate(productId,bodyUpdate,{new:isNew})
 }
 
+const getProductByid = async(productId)=>{
+    return await product.findOne({_id:convertToObjectIdMongoDb(productId)}).lean()
+}
+
 module.exports={
     findAllDrafForShop,
     PulishProductByshop,
@@ -95,5 +99,6 @@ module.exports={
     searchProductByuser,
     findAllProduct,
     findProduct,
-    updateProductById
+    updateProductById,
+    getProductByid
 }
