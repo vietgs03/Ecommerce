@@ -91,6 +91,20 @@ const getProductByid = async(productId)=>{
     return await product.findOne({_id:convertToObjectIdMongoDb(productId)}).lean()
 }
 
+const checkProductBySever = async(products)=>{
+    return await Promise.all(products.map(async product =>{
+        const foundProduct = await getProductByid(product.productId)
+        if(foundProduct)
+        {
+            return {
+                price:foundProduct.product_price,
+                quantity:product.quantity,
+                productId:product.productId
+            }
+        }
+    }))
+}
+
 module.exports={
     findAllDrafForShop,
     PulishProductByshop,
@@ -100,5 +114,6 @@ module.exports={
     findAllProduct,
     findProduct,
     updateProductById,
-    getProductByid
+    getProductByid,
+    checkProductBySever
 }
