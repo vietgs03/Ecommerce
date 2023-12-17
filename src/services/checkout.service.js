@@ -4,6 +4,7 @@ const { findCartById } = require("../models/repositories/card.repo")
 const { checkProductBySever } = require("../models/repositories/product.repo")
 const { checkout } = require("../routes")
 const { getDiscountAmount } = require("./discount.service")
+const { acquireLock, releaseLock } = require("./redis.service")
 
 class CheckoutService{
     //login and without login
@@ -107,6 +108,43 @@ class CheckoutService{
             checkout_order
         }
 
+    }
+
+    static async orderByUser({
+        shop_order_ids_new,
+        cartId,
+        userId,
+        user_address ={},
+        user_payment = {}
+    }){
+        const {shopOrder_ids_new,checkout_order} = await CheckoutService.checkoutReview({
+            cartId,
+            userId,
+            shop_order_ids:shopOrder_ids_new,
+        })
+
+        // check lai mot lan nua xem vuot ton kho hay khong
+        // get new array product
+        const products = shop_order_ids_new.flatMap(order =>order.item_products)
+        const acquireProduct = []
+        for (let i = 0; i < products.length; i++) {
+            const {productId,quantity} = products[i]
+            const keyLock = await acquireLock(productId,quantity,cartId)
+            acquireProduct.push(keyLock?true:false)
+            if(keyLock)
+            {
+                await releaseLock(keyLock)
+            }
+        }
+
+        // check neu co 1 san pham het hang trong khi
+        if(acquireLock.includes(false))
+        {
+            throw new BadRequest("Mot so san pham da duoc cap nhap, vui long quay lai gio hang...")
+        }
+        const newOrder= await order.create()
+
+        return newOrder
     }
 }
 
