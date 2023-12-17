@@ -12,6 +12,13 @@ class CheckountController {
             metadata: await CheckoutService.checkoutReview(req.body)
         }).send(res)
     }
+
+    getOrdersByUser = async(req,res,next) =>{
+        new SuccessResponse({
+            message:'checkoutreview',
+            metadata: await CheckoutService.getOrdersByUser(req.query)
+        }).send(res)
+    }
 }
 
 module.exports = new CheckountController()

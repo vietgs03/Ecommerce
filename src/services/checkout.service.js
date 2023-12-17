@@ -5,7 +5,7 @@ const { checkProductBySever } = require("../models/repositories/product.repo")
 const { checkout } = require("../routes")
 const { getDiscountAmount } = require("./discount.service")
 const { acquireLock, releaseLock } = require("./redis.service")
-
+const {order} =require("../models/order.model")
 class CheckoutService{
     //login and without login
     /**
@@ -142,10 +142,54 @@ class CheckoutService{
         {
             throw new BadRequest("Mot so san pham da duoc cap nhap, vui long quay lai gio hang...")
         }
-        const newOrder= await order.create()
+        const newOrder= await order.create({
+            order_userId:userId,
+            order_checkout:checkout_order,
+            order_shipping:user_address,
+            order_payment:user_payment,
+            order_product:shop_order_ids_new
+        })
+        // neu insert thanh cong thi remove product co trong gio hang
+
+        if(newOrder)
+        {
+            // remove prodcut in my cart
+        }
 
         return newOrder
     }
-}
+    
+        /*
+        query orders [Users]
+    */
+   static async getOrdersByUser({order_userId}){
 
+        return await order.findById({
+            order_userId:+order_userId
+        })
+    }
+
+    /*
+    query orders using Id [Users]
+    */
+    static async getOneOrderByuser(order_userId){
+        return await order.findOne(
+            order_userId
+        )
+    }
+
+    /*
+        cancel orders[Users]
+    */
+    // static async cancelOrderByuser(){
+
+    // }
+
+    /*
+        update orders status [Shop | Admin]
+    */
+    // static async updateOrderstatus(){
+    
+    // }
+}
 module.exports = CheckoutService
