@@ -68,5 +68,42 @@ Note:
  
 14 - Api Service Products (Optimal For LV.xxx) -   
  • Section14: Api Service Products (Opti...  
- 
+ ....
 #
+##
+- Nhược điểm của cách connect cũ
+- Cách connect mới, khuyên dùng
+- Kiểm tra hệ thống có bao nhiêu connect
+- THông báo khi server quá tải connect
+- Có nên disConnect liên tục hay không?
+- PoolSize là gì? vì sao lại quan trọng?
+- Nếu vượt quá kết nối poolsize?
+- MongoDB Desing pattern
+      - Polymorphic pattern
+      - Attribute pattern
+      - Bucket pattern
+      - Outlier pattern
+      - Computed pattern
+      - Subnet pattern
+      - Extended reference pattern
+      - Approximation pattern
+      - Tree pattern
+      - Preallocation pattern
+      - Document versioning pattenr
+      - Schema versioning pattern
+### Handler auth
+    https://github.com/madhums/node-express-mongoose-demo.git
+
+### Api key
+    `Lưu trữ key cung cấp cho các đối tác được truy cập vào hệ thống`
+
+## REDIS
+-STRING: Có thể là string, integer hoặc float. Redis có thể làm việc với cả string, từng phần của string, cũng như tăng/giảm giá trị của integer, float.
+
+-LIST: Danh sách liên kết của các strings. Redis hỗ trợ các thao tác push, pop từ cả 2 phía của list, trim dựa theo offset, đọc 1 hoặc nhiều items của list, tìm kiếm và xóa giá trị.
+
+-SET Tập hợp các string (không được sắp xếp). Redis hỗ trợ các thao tác thêm, đọc, xóa từng phần tử, kiểm tra sự xuất hiện của phần tử trong tập hợp. Ngoài ra Redis còn hỗ trợ các phép toán tập hợp, gồm intersect/union/difference.
+
+-HASH: Lưu trữ hash table của các cặp key-value, trong đó key được sắp xếp ngẫu nhiên, không theo thứ tự nào cả. Redis hỗ trợ các thao tác thêm, đọc, xóa từng phần tử, cũng như đọc tất cả giá trị.
+
+-ZSET (sorted set): Là 1 danh sách, trong đó mỗi phần tử là map của 1 string (member) và 1 floating-point number (score), danh sách được sắp xếp theo score này. Redis hỗ trợ thao tác thêm, đọc, xóa từng phần tử, lấy ra các phần tử dựa theo range của score hoặc của string.
