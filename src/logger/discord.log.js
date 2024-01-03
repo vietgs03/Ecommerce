@@ -24,6 +24,10 @@ class LoggerService {
     sendToFormatCode(logData)
     {
         const {code,message='This is some additional information about the code.',title='code example'}=logData
+        if(1===1){
+            //product and dev co can ghi log hay ko
+            
+        }
         const codeMessage ={
             content:message,
             embeds:[
