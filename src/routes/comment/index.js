@@ -11,6 +11,7 @@ route.use(authenticationV2)
 ///////////
 
 route.post('',asyncHandler(CommentController.createComment))
+route.delete('',asyncHandler(CommentController.deleteComment))
 route.get('',asyncHandler(CommentController.getCommentByParentId))
 
 module.exports=route
