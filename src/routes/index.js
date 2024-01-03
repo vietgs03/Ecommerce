@@ -1,7 +1,10 @@
 const express = require('express');
-const { apiKey, permission } = require('../auth/checkAuth');
 
 const route = express.Router();
+const { apiKey, permission } = require('../auth/checkAuth');
+const {pushTologDiscord} = require('../middlewares')
+// add log to discord router
+route.use(pushTologDiscord)
 //check APi
 debugger
 route.use(apiKey) //=> trỏ tới middleware (auth)

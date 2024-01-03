@@ -1,8 +1,46 @@
-
 const redis = require('redis');
 const { promisify } = require('util');
 const { reservationInventory } = require('../models/repositories/inventory.repo');
 const redisClient = redis.createClient();
+
+// Promisify Redis commands
+const getAsync = promisify(redisClient.get).bind(redisClient);
+
+async function performRedisOperation() {
+    try {
+        // Check if the client is connected before performing operations
+        if (!redisClient.connected) {
+            await connectToRedis(); 
+        }
+        const result = await getAsync('someKey');
+        console.log('Result from Redis:', result);
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+}
+
+// Function to reconnect or handle connection logic
+function connectToRedis() {
+    return new Promise((resolve, reject) => {
+        redisClient.on('connect', () => {
+            console.log('Reconnected to Redis');
+            resolve();
+        });
+
+        redisClient.on('error', (err) => {
+            console.error('Error reconnecting to Redis:', err);
+            reject(err);
+        });
+
+        redisClient.connect();
+    });
+}
+
+// Call the asynchronous function
+performRedisOperation();
+
+
+
 
 // Promisify the existing methods
 const pexpireAsync = promisify(redisClient.pExpire).bind(redisClient);
