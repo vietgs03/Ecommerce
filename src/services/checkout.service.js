@@ -1,8 +1,6 @@
 const { BadRequest } = require("../core/error.response")
-const { product } = require("../models/product.model")
 const { findCartById } = require("../models/repositories/card.repo")
 const { checkProductBySever } = require("../models/repositories/product.repo")
-const { checkout } = require("../routes")
 const { getDiscountAmount } = require("./discount.service")
 const { acquireLock, releaseLock } = require("./redis.service")
 const {order} =require("../models/order.model")
